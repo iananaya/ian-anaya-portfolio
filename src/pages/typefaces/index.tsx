@@ -25,8 +25,9 @@ export default function TypefacesPage() {
   const router = useRouter();
 
   // Load all typefaces from Sanity
-  useEffect(() => {
-    async function fetchTypefaces() {
+useEffect(() => {
+  async function fetchTypefaces() {
+    try {
       const data = await sanity.fetch(groq`
         *[_type == "typeface"]{
           _id,
@@ -43,10 +44,15 @@ export default function TypefacesPage() {
         } | order(familyName asc)
       `);
 
+      console.log("✅ Sanity data fetched:", data);
       setTypefaces(data);
+    } catch (err) {
+      console.error("❌ Sanity fetch failed:", err);
     }
-    fetchTypefaces();
-  }, []);
+  }
+  fetchTypefaces();
+}, []);
+
 
   // Load each font dynamically
   useEffect(() => {
